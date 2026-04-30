@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PPTI | 人类精神图鉴</title>
+    <title>TEPI | 现代情感塔罗图鉴</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://imgcache.qq.com/qcloud/cloudbase-js-sdk/1.3.3/cloudbase.full.js"></script>
 
@@ -98,33 +98,34 @@
 <body>
 
 <div id="terminal-screen" class="screen active">
-    <div class="term-line" id="line1">> 初始化测算接口...</div>
-    <div class="term-line" id="line2">> 正在扫描宿主社会化防御机制...</div>
-    <div class="term-line" id="line3">> 资本异化滤镜已剥离...</div>
-    <div class="term-line" id="line4" style="margin-top: 20px;">who-ology 系统 v2.0</div>
-    <div class="term-line" id="line5">请确保在安静、私密的环境下接受观测</div>
-    <button id="enter-btn" onclick="startIntro()">[ 进 入 观 测 ]</button>
+    <div class="term-line" id="line1">> 正在感应你的灵魂...</div>
+    <div class="term-line" id="line2">> 正在扫描宿主的市场化交换逻辑...</div>
+    <div class="term-line" id="line3">> 资本凝视已屏蔽，塔罗牌阵已就绪...</div>
+    <div class="term-line" id="line4" style="margin-top: 20px;">Tarot Emotion Protocol v1.0</div>
+    <div class="term-line" id="line5">请在不计较得失的真空环境下进行抽牌</div>
+    <button id="enter-btn" onclick="startIntro()">[ 展 开 牌 阵 ]</button>
 </div>
 
 <div id="app-container">
     <div id="intro-screen" class="screen">
         <div class="header-bar">
             <span>SESSION-ID: <span id="sess-id"></span></span>
-            <span>who-ology</span>
+            <span>TEPI System</span>
         </div>
-        <div class="title-huge">PPTI</div>
-        <div class="subtitle">— 人类精神图鉴 —</div>
+        <div class="title-huge">T E P I</div>
+        <div class="subtitle">— 现代情感异化图鉴 —</div>
         <div class="quote">
-            “在必须假装正常的时代，<br><br>
-            承认自己有病，是一场最伟大的反叛。”
+            “在万物皆可定价的市场里，<br><br>
+            承认自己依然渴望无条件的爱，<br><br>
+            是一场最伟大的反叛。”
         </div>
-        <button class="start-btn" onclick="startQuiz()">[ 开启临床问诊 ]</button>
+        <button class="start-btn" onclick="startQuiz()">[ 提 取 潜 意 识 切 片 ]</button>
     </div>
 
     <div id="quiz-screen" class="screen">
         <div class="header-bar">
-            <span id="progress-text">异化切片 01 / 24</span>
-            <span>who-ology</span>
+            <span id="progress-text">观测切片 01 / 24</span>
+            <span>TEPI System</span>
         </div>
         <div id="question-text" class="question-text">加载中...</div>
         <div class="options-container">
@@ -137,10 +138,10 @@
 
     <div id="result-screen" class="screen">
         <div class="header-bar">
-            <span>[ DIAGNOSIS ]</span>
-            <span>who-ology</span>
+            <span>[ CLINICAL REPORT ]</span>
+            <span>TEPI System</span>
         </div>
-        <div class="result-title">你的异化人格是</div>
+        <div class="result-title">你的情感塔罗牌是</div>
         <div id="res-type" class="result-type">隐士</div>
         <div id="res-eng" class="result-eng">The Hermit (I-C-T-F)</div>
         
@@ -156,7 +157,7 @@
         
         <div class="barcode">
             ||||||| |||| |||||||| ||||||| |||||<br>
-            SYS-ID / AUTH: PPTI-CORE
+            SYS-ID / AUTH: TEPI-CORE
         </div>
     </div>
 </div>
@@ -191,7 +192,7 @@
         
         // 维度二：Logic (O为正，C为负)
         { d: 'logic', t: "如果我曾花了一整个晚上耐心听朋友大吐苦水，但当我自己遇到破事需要倾诉时，对方却只是敷衍地回了几个表情包，我会在心里狠狠记上一笔，并立刻觉得这段关系“变味了”。", w: 'normal', dir: 'neg' },
-        { d: 'logic', t: "我极度讨厌在感情里“欠别人”的感觉。如果别人在我崩溃时给了我极大的安慰和陪伴，我一定会尽快找个机会（比如请客吃饭、送礼物）把这个人情“还”上，只有两不相欠，我心里才踏实。", w: 'high', dir: 'neg' },
+        { d: 'logic', t: "我极度讨厌在感情里“欠别人”的感觉。如果别人在我崩溃时给了我极大的安慰和陪伴，我一定会尽快找个机会（比如请客吃饭、送个精心挑选的礼物）把这个人情“还”上，只有两不相欠，我心里才踏实。", w: 'high', dir: 'neg' },
         { d: 'logic', t: "不管我一开始多在意一个人，只要我连续几次发现“一直是我在主动找话题、单方面提供关心，而对方的反应永远是不冷不热”，我就会瞬间下头，并迅速收回我所有的热情。", w: 'normal', dir: 'neg' },
         { d: 'logic', t: "我觉得在真正亲密的关系（死党或恋人）里，去暗自计较“吵架后谁先低头的次数多”、“谁照顾谁更多一点”是极其煞风景的。真感情就应该是一笔永远算不清的糊涂账。", w: 'normal', dir: 'pos' },
         { d: 'logic', t: "如果我从心底里认可一个人，哪怕在很长一段时间里，完全变成了我单方面在承受Ta的负能量、包容Ta的坏脾气，我也不会觉得“凭什么”或者觉得不公平。", w: 'normal', dir: 'pos' },
@@ -278,7 +279,7 @@
     }
 
     function renderQuestion() {
-        document.getElementById('progress-text').innerText = `异化切片 ${String(currentQuestion + 1).padStart(2, '0')} / 24`;
+        document.getElementById('progress-text').innerText = `观测切片 ${String(currentQuestion + 1).padStart(2, '0')} / 24`;
         document.getElementById('question-text').innerText = questions[currentQuestion].t;
     }
 
