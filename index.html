@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TEPI | 现代情感塔罗图鉴</title>
+    <title>TEPI | 现代情感异化图鉴</title>
     <!-- 引入图表库 (用于生成雷达图) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- 引入腾讯云 TCB SDK -->
@@ -48,7 +48,7 @@
             color: #d0d0d0; padding: 10px 20px; cursor: pointer;
             font-family: 'Courier New', Courier, monospace; letter-spacing: 2px;
             opacity: 0; transition: all 0.3s;
-            align-self: center; /* 修复了按钮被无限拉伸成大砖头的Bug */
+            align-self: center; 
         }
         #enter-btn:hover { background: #d0d0d0; color: #050505; }
 
@@ -76,6 +76,15 @@
             text-align: center;
         }
         .option-btn:active { background-color: var(--text-color); color: var(--bg-color); }
+        
+        /* 返回按钮样式 */
+        #back-btn {
+            margin-top: 25px; background: none; border: none; color: #999; 
+            text-decoration: underline; cursor: pointer; font-family: var(--font-main); 
+            font-size: 14px; width: 100%; text-align: center; display: none;
+            transition: color 0.3s;
+        }
+        #back-btn:hover { color: var(--text-color); }
 
         /* --- 3. 诊断结果页 --- */
         .result-title { text-align: center; font-size: 14px; color: #666; margin-bottom: 10px; }
@@ -140,6 +149,7 @@
             <button class="option-btn" onclick="selectOption(2)">比较不认可</button>
             <button class="option-btn" onclick="selectOption(3)">完全不认可</button>
         </div>
+        <button id="back-btn" onclick="prevQuestion()">返回上一题</button>
     </div>
 
     <!-- 4. 结果页 -->
@@ -181,7 +191,6 @@
 
     /* ==========================================
        二、 题库与逻辑配置
-       1. I(-) vs E(+)  2. C(-) vs O(+)  3. T(-) vs V(+)  4. F(-) vs R(+)
        ========================================== */
     const dimensions = { source: 0, logic: 0, value: 0, risk: 0 };
     
@@ -245,6 +254,7 @@
        三、 流程控制与洗牌逻辑
        ========================================== */
     let currentQuestion = 0;
+    let userAnswers = new Array(24).fill(null); // 新增：用于记录用户每道题的答案
     
     // 数组洗牌算法
     function shuffleArray(array) {
@@ -272,7 +282,6 @@
     };
 
     function startIntro() {
-        // 暴力干掉这层黑布，防止 CSS 层级作祟
         document.getElementById('terminal-screen').style.display = 'none';
         document.getElementById('terminal-screen').classList.remove('active');
         document.getElementById('intro-screen').classList.add('active');
@@ -282,7 +291,6 @@
         document.getElementById('intro-screen').classList.remove('active');
         document.getElementById('quiz-screen').classList.add('active');
         
-        // 核心修改：开始答题前彻底打乱题库顺序
         shuffleArray(questions);
         renderQuestion();
     }
@@ -290,15 +298,27 @@
     function renderQuestion() {
         document.getElementById('progress-text').innerText = `观测切片 ${String(currentQuestion + 1).padStart(2, '0')} / 24`;
         document.getElementById('question-text').innerText = questions[currentQuestion].t;
+        
+        // 控制返回按钮的显示与隐藏
+        const backBtn = document.getElementById('back-btn');
+        if (currentQuestion > 0) {
+            backBtn.style.display = 'block';
+        } else {
+            backBtn.style.display = 'none';
+        }
+    }
+
+    // 新增：返回上一题逻辑
+    function prevQuestion() {
+        if (currentQuestion > 0) {
+            currentQuestion--;
+            renderQuestion();
+        }
     }
 
     function selectOption(index) {
-        const q = questions[currentQuestion];
-        const scoreArr = q.w === 'high' ? 
-            (q.dir === 'pos' ? HIGH_POS : HIGH_NEG) : 
-            (q.dir === 'pos' ? NORMAL_POS : NORMAL_NEG);
-        
-        dimensions[q.d] += scoreArr[index];
+        // 先记录当前这道题的答案，不再立刻算分
+        userAnswers[currentQuestion] = index;
 
         if (currentQuestion < questions.length - 1) {
             currentQuestion++;
@@ -312,6 +332,21 @@
         document.getElementById('quiz-screen').classList.remove('active');
         document.getElementById('result-screen').classList.add('active');
 
+        // --- 核心修改：在交卷时，统一计算所有已答题目的总分 ---
+        dimensions.source = 0; dimensions.logic = 0; dimensions.value = 0; dimensions.risk = 0;
+        
+        for (let i = 0; i < questions.length; i++) {
+            const q = questions[i];
+            const ansIndex = userAnswers[i];
+            if (ansIndex !== null && ansIndex !== undefined) {
+                const scoreArr = q.w === 'high' ? 
+                    (q.dir === 'pos' ? HIGH_POS : HIGH_NEG) : 
+                    (q.dir === 'pos' ? NORMAL_POS : NORMAL_NEG);
+                dimensions[q.d] += scoreArr[ansIndex];
+            }
+        }
+        // --------------------------------------------------
+
         const L1 = dimensions.source > 0 ? 'E' : 'I';
         const L2 = dimensions.logic > 0 ? 'O' : 'C';
         const L3 = dimensions.value > 0 ? 'V' : 'T';
@@ -320,7 +355,6 @@
         
         let tarot = tarotData[finalCode];
         
-        // SSR 终极判定：纯爱战神 (EOVR 且 V和R维度拿极高分)
         let isSSR = false;
         if (finalCode === 'EOVR' && dimensions.value >= 8 && dimensions.risk >= 8) {
             isSSR = true;
